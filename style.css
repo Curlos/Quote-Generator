@@ -78,7 +78,7 @@ button:active {
     color: #38a1f3;
 }
 
-.fa-twitter {
+.fa-twitter, .fa-clipboard, .fa-facebook {
     font-size: 1.5rem;
 }
 

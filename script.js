@@ -3,21 +3,23 @@ let quote = document.getElementById("quote");
 let author = document.getElementById("author");
 let twitterButton = document.getElementById("twitter");
 let newQuoteButton = document.getElementById("new-quote");
+let copyClipboardButton = document.getElementById("copyClipboard");
 
 let apiQuotes = [];
-// Show loading
-const loading = () => {
+let fetchQuoteErrorCounter = 0;
+
+const showLoadingSpinner = () => {
     loader.hidden = false;
     quoteContainer.hidden = true;
 }
 
-const complete = () => {
+const removeLoadingSpinner = () => {
     loader.hidden = true;
     quoteContainer.hidden = false;
 }
-// Show New Quote
-const newQuote = () => {
-    complete();
+
+const showNewQuote = () => {
+    removeLoadingSpinner();
 
     const max = apiQuotes.length - 1
     const randomIndex = Math.floor(Math.random() * max);
@@ -38,15 +40,14 @@ const newQuote = () => {
     }
 }
 
-// Get Quotes From API
-const getQuotes = async () => {
-    loading();
+const getQuotesFromAPI = async () => {
+    showLoadingSpinner();
 
     try {
         const apiUrl = 'https://type.fit/api/quotes';
         const response = await fetch(apiUrl);
         apiQuotes = await response.json();
-        newQuote();
+        showNewQuote();
     } catch(error) {
         // Catch Error Here
         console.log(error);
@@ -58,7 +59,12 @@ const tweetQuote = () => {
     window.open(twitterURL, '_blank');
 }
 
-newQuoteButton.addEventListener("click", getQuotes);
-twitterButton.addEventListener("click", tweetQuote);
+const copyQuoteToClipboard = () => {
+    navigator.clipboard.writeText(`${quote.textContent} - ${author.textContent}`);
+}
 
-getQuotes()
+newQuoteButton.addEventListener("click", getQuotesFromAPI);
+twitterButton.addEventListener("click", tweetQuote);
+copyClipboardButton.addEventListener("click", copyQuoteToClipboard);
+
+getQuotesFromAPI();
